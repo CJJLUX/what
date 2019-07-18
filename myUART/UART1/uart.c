@@ -6,7 +6,7 @@ void uart0_init(void)
 {
     //关闭上拉功能
     GPIOD_PULLENB_DISABLE_DEFAULT |= ((1 << 14) | (1 << 18));
-    GPIOD_PULLENB &= ~((1 << 18) | (1 << 14));
+    GPIOD_PULLENB &= ~((1 << 14) | (1 << 18));
 
     //设置复用，作为串口
     GPIODALTFN0 &= ~(3 << 28);
@@ -16,13 +16,13 @@ void uart0_init(void)
     GPIODALTFN1 |= (1 << 4);
 
     //word length 8 
-    //NUMBER OF STOP BIT  1
     //PARITY MODE  0
     //INFRARED MODE 0 
+    //NUMBER OF STOP BIT  1
     ULCON0 &= ~(3 << 0);
     ULCON0 |= (3 << 0);
     ULCON0 &= (~(1 << 2) | ~(1 << 5) | ~(1 << 6));
-    //串口里面有一个DMA的功能，cpu内存里面有一段数据，cpu不想亲历亲为就会告诉DMA，那么DMA就会发送给串口，串口再发出去
+    //串口里面有一个DMA的功能，cpu内存里面有一段数据，cpu不想亲力亲为就会告诉DMA，那么DMA就会发送给串口，串口再发出去
     //轮寻
     UCON0 &= ~(5 << 0);
     UCON0 |= (5 << 0);
@@ -31,6 +31,16 @@ void uart0_init(void)
     //关闭afc
     UMCON0 = 0;
     //115200 需要用公式计算一下
+	//UARTCLKGEN0L
+	//Base Address: 0xC000_0000
+	//Address = Base Address + 0xA9004
+	//CLKSRCSEL0 [4:2] pllx 
+	//CLKDIV0 [12:5] Divider value = CLKDIV0 + 1
+	//UARTCLKENB
+	//0xC000A9000
+	//CLKGENENB [2] enable
+	//printf("UART0 pll is %#x\n", UARTCLKGEN0L);
+	//printf("UART0 is enble %#x\n", CLKGENENB);
     UBRDIV0 = 26; 
     UFRACVAL0 = 2;
 
