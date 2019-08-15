@@ -1,0 +1,19 @@
+/////s5p6818//////
+
+内部有：控制器、总线、armcpu
+115200 38400 9600
+8N1
+24M->PLL--> CMU--->UART(IP 每一个控制器都是一个IP,串口也是一个控制器)
+PLL -> 锁向环(倍频->放大24M的时钟)
+CMU -> 时钟管理单元(分频)
+stm32的时钟 与arm 时钟有何区别?
+stm32 连在那个总线AHB1 AHB2  ，频率由总线所决定，当时用的是stm32 m4 额定工作频率是168M HZ(m3 72M)。arm不一样,有4个锁向环PLL0 PLL1, PLL2 PLL3.分别是40M to 2.5GHz ,35M to 2.2GHz
+
+步骤分析：
+    1、首先打印出arm配置的UARTCLKGEN0L和UARTCLKENB
+    2、根据打印出来的寄存器的值，CLKSRCSEL0[4:2]分析第几个锁向环(PLLx)
+    3、假如分析出来位与锁向环1上，那么就去PLLSETREG1，把锁向环1的寄存器的值打印出来，分析出来[23:18] [17:8] [7:0]，PDIV MDIV SDIV，看PLL对应的频率与图表Input Output。
+
+PLL1 800M
+UART = 800M /15+1 = 50M
+

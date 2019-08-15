@@ -1,0 +1,13 @@
+////////////////
+fork
+exec
+wait
+///////////////
+
+fork->create a new process by duplicating the calling procss.
+------
+exec->the exec family of functions repleaces the current process image with a new process image.
+execl, execlp, execle, execv, execvp, execvpe - execute a file
+------
+wait->wait for process to change state.
+
