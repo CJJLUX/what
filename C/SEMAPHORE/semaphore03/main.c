@@ -46,7 +46,7 @@ void *pthread_func2(void *sem)
             printf("-----------out-time----\n");
             pthread_exit(NULL); 
         }
-        sleep(1);
+    //    sleep(1);
     }
 
     pthread_exit(NULL); 
