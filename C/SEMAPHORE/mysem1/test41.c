@@ -3,6 +3,7 @@
 #include <unistd.h>  
 #include <pthread.h>  
 #include <sys/time.h>
+#include <signal.h>
 #include <semaphore.h>  
 #include <errno.h>  
 #include <string.h>
@@ -141,14 +142,14 @@ void mysem_post(struct PrivInfo *thiz)
 
 static void *pthread_func_1(struct PrivInfo *thiz)  
 {  
-    int times_count = 0;
+    static volatile sig_atomic_t times_count = 0;
 
     printf("pthread1\n");
     while(1) {
         mysem_post(thiz);
         times_count++;
         printf("pthread1: pthread1 get the lock. times_count = %d\n", times_count);  
-        sleep(1);
+ //       sleep(1);
     }
 }  
 
@@ -160,7 +161,7 @@ static void *pthread_func_2 (struct PrivInfo *thiz)
     while(1) {
         mysem_wait(thiz);
         printf("pthread2: pthread2 unlock.\n");  
-        sleep(1);
+ //       sleep(1);
     }
 }
 
@@ -172,8 +173,10 @@ int main (int argc, char **argv)
     int myval = -1;
     struct PrivInfo *thiz = NULL;  
 
-    if(argc > 0) {
+    if(argc > 1) {
         myval = atoi(argv[1]);
+    }else{
+        myval = 1;
     }
 
     thiz = mysem_init(thiz, myval, 1, 10000);  
